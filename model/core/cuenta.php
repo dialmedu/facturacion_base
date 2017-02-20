@@ -339,7 +339,7 @@ class cuenta extends \fs_model
       $eje0 = $ejercicio->get($this->codejercicio);
       if($eje0)
       {
-         $codsubcuenta = floatval( sprintf('%-0'.$eje0->longsubcuenta.'s', $this->codcuenta) ) + $suma_codigo;
+         $codsubcuenta = floatval( sprintf('%-0'.$eje0->longsubcuenta.'s', $this->codcuenta) ).intval($suma_codigo);
          $subcuenta = new \subcuenta();
          $subc0 = $subcuenta->get_by_codigo($codsubcuenta, $this->codejercicio);
          if($subc0)

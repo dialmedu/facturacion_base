@@ -439,8 +439,8 @@ class cliente extends \fs_model
          if($ccli)
          {
             $continuar = FALSE;
+            $subc0 = $this->new_subcuenta($ccli);
             
-            $subc0 = $ccli->new_subcuenta($this->codcliente);
             if($subc0)
             {
                $subc0->descripcion = $this->razonsocial;
@@ -487,7 +487,38 @@ class cliente extends \fs_model
       
       return $subcuenta;
    }
-   
+
+   /**
+   * Genera una subcuenta por defecto para clientes nacionales
+   * segun su divisa, usando cuenta cliente como argumento.
+   */
+   private function new_subcuenta($ccli){
+      $coddivisa_nacional = $this->default_items->coddivisa();
+      $scli = '';
+      $scli_nacional = array(
+              'EUR' => '00' , //4300
+              'COP' => '05' //130505
+            );
+    
+      $conoce_subcuenta_nacional = array_key_exists($coddivisa_nacional,$scli_nacional);
+
+      if ($conoce_subcuenta_nacional)
+      {
+        if ($coddivisa_nacional == $this->coddivisa )
+        {
+          $scli = $scli_nacional[$this->coddivisa];
+        }
+        else
+        {
+          $scli = '00';
+        }
+
+        $ccli->codcuenta = $ccli->codcuenta.$scli;
+      }
+      
+      return  $ccli->new_subcuenta($this->codcliente);
+   }
+ 
    public function exists()
    {
       if( is_null($this->codcliente) )
