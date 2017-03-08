@@ -142,6 +142,11 @@
       <defecto>0</defecto>
    </columna>
    <columna>
+      <nombre>sesirve</nombre>
+      <tipo>boolean</tipo>
+      <nulo>YES</nulo>
+   </columna>
+   <columna>
       <nombre>sevende</nombre>
       <tipo>boolean</tipo>
       <nulo>YES</nulo>

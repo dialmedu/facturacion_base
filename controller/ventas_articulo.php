@@ -380,6 +380,7 @@ class ventas_articulo extends fs_controller
          $this->articulo->controlstock = isset($_POST['controlstock']);
          $this->articulo->nostock = isset($_POST['nostock']);
          $this->articulo->secompra = isset($_POST['secompra']);
+         $this->articulo->sesirve = isset($_POST['sesirve']);
          $this->articulo->sevende = isset($_POST['sevende']);
          $this->articulo->publico = isset($_POST['publico']);
          $this->articulo->observaciones = $_POST['observaciones'];

@@ -111,6 +111,7 @@ class articulo extends \fs_model
    public $bloqueado;
    public $secompra;
    public $sevende;
+   public $sesirve;
    
    /**
     * TRUE -> se mostrará sincronizará con la tienda online.
@@ -209,7 +210,7 @@ class articulo extends \fs_model
       {
          self::$column_list = 'referencia,codfamilia,codfabricante,descripcion,pvp,factualizado,costemedio,'.
                  'preciocoste,codimpuesto,stockfis,stockmin,stockmax,controlstock,nostock,bloqueado,'.
-                 'secompra,sevende,equivalencia,codbarras,observaciones,imagen,publico,tipo,'.
+                 'secompra,sesirve,sevende,equivalencia,codbarras,observaciones,imagen,publico,tipo,'.
                  'partnumber,codsubcuentacom,codsubcuentairpfcom,trazabilidad';
       }
       
@@ -238,6 +239,11 @@ class articulo extends \fs_model
          
          $this->bloqueado = $this->str2bool($a['bloqueado']);
          $this->secompra = $this->str2bool($a['secompra']);
+         $this->sesirve = $this->str2bool($a['sesirve']);
+         if($this->sesirve)
+         {
+            $this->controlstock = TRUE;
+         }
          $this->sevende = $this->str2bool($a['sevende']);
          $this->publico = $this->str2bool($a['publico']);
          $this->equivalencia = $a['equivalencia'];
@@ -270,6 +276,7 @@ class articulo extends \fs_model
          $this->nostock = FALSE;
          $this->bloqueado = FALSE;
          $this->secompra = TRUE;
+         $this->sesirve = FALSE;
          $this->sevende = TRUE;
          $this->publico = FALSE;
          $this->equivalencia = NULL;
@@ -945,6 +952,7 @@ class articulo extends \fs_model
                     ", controlstock = ".$this->var2str($this->controlstock).
                     ", nostock = ".$this->var2str($this->nostock).
                     ", bloqueado = ".$this->var2str($this->bloqueado).
+                    ", sesirve = ".$this->var2str($this->sesirve). 
                     ", sevende = ".$this->var2str($this->sevende).
                     ", publico = ".$this->var2str($this->publico).
                     ", secompra = ".$this->var2str($this->secompra).
@@ -986,6 +994,7 @@ class articulo extends \fs_model
                     $this->var2str($this->nostock).",".
                     $this->var2str($this->bloqueado).",".
                     $this->var2str($this->secompra).",".
+                    $this->var2str($this->sesirve).",".
                     $this->var2str($this->sevende).",".
                     $this->var2str($this->equivalencia).",".
                     $this->var2str($this->codbarras).",".
