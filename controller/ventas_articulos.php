@@ -250,6 +250,7 @@ class ventas_articulos extends fs_controller
          {
             $articulo->referencia = $_POST['referencia'];
          }
+         $articulo->sesirve = isset($_POST['sesirve']);
          $articulo->descripcion = $_POST['descripcion'];
          $articulo->nostock = isset($_POST['nostock']);
          

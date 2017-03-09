@@ -21,6 +21,7 @@
 require_model('articulo.php');
 require_model('articulo_propiedad.php');
 require_model('subcuenta.php');
+require_model('cuenta.php');
 
 /**
  * Description of articulo_subcuentas
@@ -48,6 +49,7 @@ class articulo_subcuentas extends fs_controller
       if( isset($_REQUEST['ref']) )
       {
          $this->articulo = $art0->get($_REQUEST['ref']);
+         $this->new_subcuenta_para_venta();
       }
       
       if( isset($_REQUEST['buscar_subcuenta']) )
@@ -109,6 +111,56 @@ class articulo_subcuentas extends fs_controller
       else
       {
          $this->new_error_msg('Artículo no encontrado.', 'error', FALSE, FALSE);
+      }
+   }
+
+   private function new_subcuenta_para_venta()
+   {
+      /// si no tiene subcuenta de venta la generamos automaticamente.
+      $ap = new articulo_propiedad();
+      $propiedades = $ap->array_get($this->articulo->referencia);
+      if( !isset($propiedades['codsubcuentaventa']))
+      {
+         $eje0 = new ejercicio();
+         $cuenta = new cuenta();
+         $subcuenta = new subcuenta();
+         $generar_subcuenta = TRUE;
+         $ejercicio = $eje0->get_by_fecha( $this->today() );
+         
+         /// subcuenta para venta de servicio
+         if ($this->articulo->sesirve) {
+            $cuenta = $cuenta->get_cuentaesp('SVENTA', $ejercicio->codejercicio);
+            if (!$cuenta) {
+               $this->new_error_msg('no existe una cuenta especial para <a href="'.$subcuenta->url().'">SVENTA</a>.');
+               $generar_subcuenta = FALSE;
+            }
+         }
+         else if($this->articulo->sevende)
+         {
+            $cuenta = $cuenta->get_cuentaesp('VENTAS', $ejercicio->codejercicio);
+            if (!$cuenta) {
+               $this->new_error_msg('no existe una cuenta especial para <a href="'.$subcuenta->url().'">VENTAS</a>.');
+               $generar_subcuenta = FALSE;
+            }
+         }
+
+         if ($generar_subcuenta) {
+            $cuenta->codcuenta = $cuenta->codcuenta."00";
+            $subcuenta = $cuenta->new_subcuenta($this->articulo->referencia);
+            $subcuenta->descripcion = strtoupper( $cuenta->descripcion." para ".$this->articulo->descripcion );
+            if( !$subcuenta->save() )
+            {
+               $this->new_error_msg('no se pudo crear subcuentas venta automatica, intentelo manualmente.');
+            }
+            else
+            {
+               $aprops = array('codsubcuentaventa' => $subcuenta->codsubcuenta);
+               if( $ap->array_save($this->articulo->referencia, $aprops) )
+               {
+                  $this->new_message('<a href="'.$subcuenta->url().'">sub-cuenta de venta </a> generada automaticamente');
+               }
+            }
+         }
       }
    }
    
